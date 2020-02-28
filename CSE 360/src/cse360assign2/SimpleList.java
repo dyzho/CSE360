@@ -1,12 +1,16 @@
 /**
  * Author: David Zhou
  * ClassID: 345
- * Assignment 1
+ * Assignment 2
  * Description: The SimpleList file contains the implementation
- * 				of the add, remove, count, toString, and search
- * 				methods as well as the constructor.
+ * 				of the add, remove, count, toString, search, append,
+ * 				first, last, and size methods as well as the 
+ * 				constructor.
  */
 package cse360assign2;
+
+import java.util.Arrays;
+
 public class SimpleList 
 {
 	/** 
@@ -14,10 +18,12 @@ public class SimpleList
 	 * five methods to add, remove, count, return as string, and
 	 * search elements in an integer array.
 	 * @param list The integer array contains the numbers.
-	 * @param count A variable storing how many numbers are in the array.
+	 * @param count A variable storing how many numbers are in array.
+	 * @param maxLength A variable storing the max size of array.
 	 */
 	private int[] list;
 	private int count;
+	private int maxLength = 10;
 	
 	/**
 	 * SimpleList constructor initializes list as a blank array and
@@ -31,28 +37,39 @@ public class SimpleList
 
 	/**
 	 * Method add(int) adds the integer to the beginning of the array.
+	 * The array size increases by 50% if it is too small.
 	 * @param num Number to be added to array
 	 */
 	public void add(int num){
+		
+		if (count == maxLength) {
+			if (maxLength == 1) {
+				list = Arrays.copyOf(list, 2);
+				maxLength = 2;
+			}
+			else {
+				list = Arrays.copyOf(list, (int) (maxLength * 1.5));
+				maxLength = (int) (maxLength * 1.5);
+			}
+		}
 		
 		// first shifts the array to the right by one before adding to array
 		for (int iterator = list.length - 1; iterator > 0; iterator--) {
 			list[iterator] = list[iterator - 1];
 		}
 		list[0] = num;
-		if (count < 10)	{
-			count++;
-		}
+		count++;
 	}
 	
 	/**
-	 * Method remove(int) removes all instances of the integer from the array.
+	 * Method remove(int) removes the first instance of the integer.
+	 * The array is resized if more than 25% is unfilled.
 	 * @param num Number to be removed from array
 	 */
 	public void remove(int num) {
 		
 		// creates a new list for storing numbers
-		int[] tempList = new int[10]; 
+		int[] tempList = new int[maxLength]; 
 		
 		int iteratorTempList = 0;
 		boolean found = false;
@@ -70,6 +87,12 @@ public class SimpleList
 			}
 		}
 		list = tempList;
+		if (count < (int) (0.75 * maxLength) && maxLength != 1){
+
+			list = Arrays.copyOf(list, (int) (maxLength * 0.75));
+			maxLength = (int) (0.75 * maxLength);
+		}
+		
 	}
 	
 	/**
@@ -114,5 +137,63 @@ public class SimpleList
 			}
 		}
 		return index;
+	}
+	
+	/**
+	 * Method append(int) adds a number to the end of the array,
+	 * increasing the size of the array by 50% if necessary.
+	 * @param num The number to be added at the end of the array
+	 */
+	public void append(int num) {
+		
+		if (count == maxLength) {
+			if (maxLength == 1) {
+				list = Arrays.copyOf(list, 2);
+				maxLength = 2;
+			}
+			else {
+				list = Arrays.copyOf(list, (int) (maxLength * 1.5));
+				maxLength = (int) (maxLength * 1.5);
+			}
+		}
+		list[count] = num;
+		count++;
+	}
+	
+	/**
+	 * Method first() returns the number at the first index
+	 * of the array.
+	 * @return The number at the first index
+	 */
+	public int first() {
+		if (count > 0) {
+			return list[0];
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * Method last() returns the number at the last filled
+	 * index of the array.
+	 * @return The number at the last filled index
+	 */
+	public int last() {
+		if (count > 0) {
+			return list[count - 1];
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * Method size() returns the maximum number of numbers able
+	 * to be stored in the array at its current size.
+	 * @return the current length of the array
+	 */
+	public int size() {
+		return maxLength;
 	}
 }
